@@ -21,6 +21,9 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
 
 
 public class HashActivity extends ActionBarActivity {
@@ -50,18 +53,12 @@ public class HashActivity extends ActionBarActivity {
                 try {
                     EditText uriInputBox = (EditText) findViewById(R.id.uriInputBox);
                     URL uri = new URL(uriInputBox.getText().toString());
-                    HttpURLConnection urlConnection = (HttpURLConnection) uri.openConnection();
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    Writer out = new StringWriter();
-                    IOUtils.copy(in, out);
 
-                    ((TextView) findViewById(R.id.outputTextView)).setText(out.toString());
+                    new DownloadUrlTask(mContext).execute(uri);
 
 
-                    //use multicatch ?
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    Toast.makeText(mContext, mContext.getString(R.string.malformed_url), Toast.LENGTH_SHORT).show();
+
+                    //multicatch yes no?
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(mContext, mContext.getString(R.string.io_exception), Toast.LENGTH_SHORT).show();
