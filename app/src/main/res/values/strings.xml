@@ -3,4 +3,6 @@
 
     <string name="android_home">http://android.com</string>
     <string name="action_settings">Settings</string>
+    <string name="malformed_url">malformed url. please use http in input</string>
+    <string name="io_exception">io exception caught</string>
 </resources>
