@@ -78,23 +78,23 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
         if (mStoredHash == "-1") {
             byte[] hashBytes = webPageDigest.getBytes(Charsets.UTF_8);
             byte firstByteOfHash = hashBytes[0];
-                if (firstByteOfHash % 2 == 0) {
+                if ((firstByteOfHash % 2) != 0) {
                     //save to preferences since its a new webpage and byte is even
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("web_hashes",Context.MODE_PRIVATE);
                     sharedPreferences.edit().putString(mUri.toString(),webPageDigest);
+                    sharedPreferences.edit().commit();
                 }
                 else{
                     //save to database since byte is odd
                 }
-
         }
 
     }
 
     protected String checkIfUrlAlreadyStored(URL uri) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String storedHash = null;
-        if ((storedHash = sharedPreferences.getString(mUri.toString(), "-1")) == "-1") {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("web_hashes", Context.MODE_PRIVATE);
+        String storedHash = sharedPreferences.getString(uri.toString(), "-1");
+        if (storedHash == "-1") {
             //check database since no such url stored in preferences
 
             return "-1";
