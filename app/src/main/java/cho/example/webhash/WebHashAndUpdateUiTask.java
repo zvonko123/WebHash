@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
@@ -47,6 +48,7 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
         if (mStoredHash != "-1")
         {
+            Toast.makeText(mContext, mContext.getString(R.string.fetched_hash), Toast.LENGTH_SHORT).show();
             return mStoredHash;
         }
         //we dont strictly need else keyword here,since code is not reached after return
@@ -71,7 +73,9 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
         ((TextView) mActivity.findViewById(R.id.outputTextView)).setText(webPageDigest);
         //check mStoredHash member again to see if webpage was previously hashed
-        if (mStoredHash != "-1") {
+        //if not, save it
+        //double checking of same thing?
+        if (mStoredHash == "-1") {
             byte[] hashBytes = webPageDigest.getBytes(Charsets.UTF_8);
             byte firstByteOfHash = hashBytes[0];
                 if (firstByteOfHash % 2 == 0) {
