@@ -8,25 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.ExecutionException;
 
 
-public class HashActivity extends ActionBarActivity {
+public class WebHashActivity extends ActionBarActivity {
 
     Context mContext;
 
@@ -54,7 +42,7 @@ public class HashActivity extends ActionBarActivity {
                     EditText uriInputBox = (EditText) findViewById(R.id.uriInputBox);
                     URL uri = new URL(uriInputBox.getText().toString());
 
-                    new DownloadUrlTask(mContext,uri).execute();
+                    new WebHashAndUpdateUiTask(mContext,uri).execute();
 
 
 

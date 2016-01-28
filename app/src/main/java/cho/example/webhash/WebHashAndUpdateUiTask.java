@@ -29,13 +29,13 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by zv0 on 27.01.16..
  */
-public class DownloadUrlTask extends AsyncTask<String,Void,String> {
+public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
     Activity mActivity=null;
     Context mContext = null;
     URL mUri=null;
     String mStoredHash = null;
-    public DownloadUrlTask(Context a,URL uri){
+    public WebHashAndUpdateUiTask(Context a, URL uri){
         mActivity = (Activity)a;
         mContext = a;
         mUri = uri;
@@ -77,7 +77,7 @@ public class DownloadUrlTask extends AsyncTask<String,Void,String> {
                 if (firstByteOfHash % 2 == 0) {
                     //save to preferences since its a new webpage and byte is even
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                    sharedPreferences.edit().putString(mUri.toString(),webPageDigest)
+                    sharedPreferences.edit().putString(mUri.toString(),webPageDigest);
                 }
                 else{
                     //save to database since byte is odd
