@@ -54,7 +54,7 @@ public class HashActivity extends ActionBarActivity {
                     EditText uriInputBox = (EditText) findViewById(R.id.uriInputBox);
                     URL uri = new URL(uriInputBox.getText().toString());
 
-                    new DownloadUrlTask(mContext).execute(uri);
+                    new DownloadUrlTask(mContext,uri).execute();
 
 
 
