@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedInputStream;
@@ -49,17 +52,14 @@ public class DownloadUrlTask extends AsyncTask<URL,Void,String> {
     protected void onPostExecute(String webPage){
 
         MessageDigest md;
-        byte[] webPageDigest=null;
-        try {
-            md = MessageDigest.getInstance("MD5");
-            webPageDigest = md.digest(webPage.getBytes("UTF-8"));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        String webPageDigest;
 
-        ((TextView) mActivity.findViewById(R.id.outputTextView)).setText(webPageDigest.toString());
+            //md = MessageDigest.getInstance("MD5");
+            //webPageDigest = md.digest(webPage.getBytes("UTF-8"));
+            webPageDigest = Hashing.md5().hashString(webPage, Charsets.UTF_8).toString();
+
+
+        ((TextView) mActivity.findViewById(R.id.outputTextView)).setText(webPageDigest);
 
     }
 
