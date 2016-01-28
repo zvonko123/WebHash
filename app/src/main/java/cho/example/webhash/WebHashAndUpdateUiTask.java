@@ -48,7 +48,7 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
         if (mStoredHash != "-1")
         {
-            Toast.makeText(mContext, mContext.getString(R.string.fetched_hash), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, mContext.getString(R.string.fetched_hash), Toast.LENGTH_SHORT).show();
             return mStoredHash;
         }
         //we dont strictly need else keyword here,since code is not reached after return
@@ -81,8 +81,9 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
                 if ((firstByteOfHash % 2) != 0) {
                     //save to preferences since its a new webpage and byte is even
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences("web_hashes",Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putString(mUri.toString(),webPageDigest);
-                    sharedPreferences.edit().commit();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(mUri.toString(),webPageDigest);
+                    editor.commit();
                 }
                 else{
                     //save to database since byte is odd
