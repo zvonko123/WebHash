@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.common.base.Charsets;
@@ -31,11 +32,12 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
     URL mUri=null;
     String mStoredHash = null;
     SQLiteDatabase mMyDatabase=null;
+
     public WebHashAndUpdateUiTask(Context a, URL uri){
         mActivity = (Activity)a;
         mContext = a;
         mUri = uri;
-        mMyDatabase = mContext.openOrCreateDatabase("web_hashes",Context.MODE_PRIVATE,null);
+        mMyDatabase = mContext.openOrCreateDatabase("web_hashes", Context.MODE_PRIVATE, null);
         mMyDatabase.execSQL("CREATE TABLE IF NOT EXISTS hashes(uri VARCHAR,hash VARCHAR);");
         mStoredHash = checkIfUrlAlreadyStored(mUri);
     }
@@ -69,6 +71,8 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
 
         ((TextView) mActivity.findViewById(R.id.outputTextView)).setText(webPageDigest);
+
+
         //check mStoredHash member again to see if webpage was previously hashed
         //if not, save it
         //double checking of same thing?
@@ -90,6 +94,34 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
 
                 }
+        }
+        else{
+            //disable button since the hash was already stored
+            final Button goButton = (Button) mActivity.findViewById(R.id.goButton);
+            goButton.setEnabled(false);
+
+            //runnable code from stackoverflow, works nicely
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    mActivity.runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            goButton.setEnabled(true);
+
+                        }
+                    });
+                }
+            }).start();
         }
 
     }
