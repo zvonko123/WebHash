@@ -26,9 +26,6 @@ public class WebHashActivity extends ActionBarActivity {
 
         mContext = this;
 
-
-
-
         Button button1 = (Button) findViewById(R.id.goButton);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,9 +35,6 @@ public class WebHashActivity extends ActionBarActivity {
                     URL uri = new URL(uriInputBox.getText().toString());
 
                     new WebHashAndUpdateUiTask(mContext,uri).execute();
-
-
-
                     //multicatch yes no?
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -71,26 +71,29 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
 
 
         ((TextView) mActivity.findViewById(R.id.outputTextView)).setText(webPageDigest);
-
+        TextView outputMsgView = (TextView) mActivity.findViewById(R.id.outputTextView2);
 
         //check mStoredHash member again to see if webpage was previously hashed
         //if not, save it
         //double checking of same thing?
+        byte[] hashBytes = webPageDigest.getBytes(Charsets.UTF_8);
+        byte firstByteOfHash = hashBytes[0];
         if (mStoredHash == "-1") {
-            byte[] hashBytes = webPageDigest.getBytes(Charsets.UTF_8);
-            byte firstByteOfHash = hashBytes[0];
                 if ((firstByteOfHash % 2) == 0) {
                     //save to preferences since its a new webpage and byte is even
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences("web_hashes",Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(mUri.toString(),webPageDigest);
+                    editor.putString(mUri.toString(), webPageDigest);
                     editor.commit();
+
+
                 }
                 else{
                     //save to database since byte is odd
                     mMyDatabase.execSQL("INSERT INTO hashes" +
-                            "(uri,hash) VALUES ('" +mUri.toString()
-                            +"','"+webPageDigest+"');");
+                            "(uri,hash) VALUES ('" + mUri.toString()
+                            + "','" + webPageDigest + "');");
+
 
 
                 }
@@ -123,7 +126,12 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
                 }
             }).start();
         }
-
+        //either we check first byte two times, or check mStored hash two times
+        if ((firstByteOfHash % 2) == 0) {
+            outputMsgView.setText(mUri.toString() +" saved in preferences");
+        } else{
+            outputMsgView.setText(mUri.toString() + " saved in sqlite db");
+        }
     }
 
     protected String checkIfUrlAlreadyStored(URL uri) {
