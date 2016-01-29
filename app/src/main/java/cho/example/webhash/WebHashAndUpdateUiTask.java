@@ -3,12 +3,10 @@ package cho.example.webhash;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
@@ -19,13 +17,9 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by zv0 on 27.01.16..
@@ -36,10 +30,13 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
     Context mContext = null;
     URL mUri=null;
     String mStoredHash = null;
+    SQLiteDatabase mMyDatabase=null;
     public WebHashAndUpdateUiTask(Context a, URL uri){
         mActivity = (Activity)a;
         mContext = a;
         mUri = uri;
+        mMyDatabase = mContext.openOrCreateDatabase("web_hashes",Context.MODE_PRIVATE,null);
+        mMyDatabase.execSQL("CREATE TABLE IF NOT EXISTS hashes(uri VARCHAR,hash VARCHAR);");
         mStoredHash = checkIfUrlAlreadyStored(mUri);
     }
     @Override
@@ -78,7 +75,7 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
         if (mStoredHash == "-1") {
             byte[] hashBytes = webPageDigest.getBytes(Charsets.UTF_8);
             byte firstByteOfHash = hashBytes[0];
-                if ((firstByteOfHash % 2) != 0) {
+                if ((firstByteOfHash % 2) == 0) {
                     //save to preferences since its a new webpage and byte is even
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences("web_hashes",Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -87,6 +84,11 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
                 }
                 else{
                     //save to database since byte is odd
+                    mMyDatabase.execSQL("INSERT INTO hashes" +
+                            "(uri,hash) VALUES ('" +mUri.toString()
+                            +"','"+webPageDigest+"');");
+
+
                 }
         }
 
@@ -98,7 +100,14 @@ public class WebHashAndUpdateUiTask extends AsyncTask<String,Void,String> {
         if (storedHash == "-1") {
             //check database since no such url stored in preferences
 
-            return "-1";
+            Cursor resultSet = mMyDatabase.rawQuery("SELECT * FROM hashes where uri='"+mUri.toString()+"';",null);
+            if (resultSet.moveToFirst() == false){
+                return "-1";
+            }
+            else{
+                storedHash = resultSet.getString(1);
+                return storedHash;
+            }
         } else {
             return storedHash;
         }

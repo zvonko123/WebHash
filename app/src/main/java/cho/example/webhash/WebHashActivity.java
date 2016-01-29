@@ -1,6 +1,7 @@
 package cho.example.webhash;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,15 +25,9 @@ public class WebHashActivity extends ActionBarActivity {
         setContentView(R.layout.activity_hash);
 
         mContext = this;
-        /*For example, to retrieve the webpage at http://www.android.com/:
-        URL url = new URL("http://www.android.com/");
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            readStream(in);
-        } finally {
-            urlConnection.disconnect();
-        }*/
+
+
+
 
         Button button1 = (Button) findViewById(R.id.goButton);
         button1.setOnClickListener(new View.OnClickListener() {
